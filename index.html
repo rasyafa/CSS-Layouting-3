@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Galeri Foto Grid</title>
+    <style>
+        /* Styling untuk body */
+        body {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #cbc8c6, #171515);
+            text-align: center;
+        }
+
+        /* Container utama untuk galeri */
+        .gallery-container {
+            padding: 20px;
+        }
+
+        /* Styling untuk judul galeri */
+        h1 {
+            color: white;
+            font-style: italic;
+            text-align: left;
+            font-size: 34px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Styling grid untuk galeri */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        /* Styling untuk setiap item dalam galeri */
+        .gallery-item {
+            top: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        /* Animasi vertikal untuk kolom genap */
+        .gallery-item:nth-child(even) {
+            animation: verticalScrollReverse 20s linear infinite;
+        }
+
+        /* Animasi vertikal untuk kolom ganjil */
+        .gallery-item:nth-child(odd) {
+            animation: verticalScroll 20s linear infinite;
+        }
+
+        /* Keyframe untuk animasi vertikal naik */
+        @keyframes verticalScroll {
+            0% {
+                transform: translateY(0%);
+            }
+
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        /* Keyframe untuk animasi vertikal turun */
+        @keyframes verticalScrollReverse {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(0%);
+            }
+        }
+
+        /* Efek hover untuk item */
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            opacity: 0.9;
+        }
+
+        /* Container untuk gambar */
+        .image-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        /* Gambar */
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        /* Efek hover: zoom pada gambar */
+        .image-container:hover img {
+            transform: scale(1.2);
+        }
+
+        /* Caption untuk setiap gambar */
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 1rem;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* Hover pada image-container membuat caption menghilang */
+        .image-container:hover .gallery-caption {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            /* Tersembunyi secara default */
+            position: fixed;
+            z-index: 9999;
+            /* Z-index tinggi agar muncul di atas */
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            /* Latar belakang gelap */
+        }
+
+        /* Gambar modal */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        /* Caption (deskripsi gambar) */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            height: 150px;
+        }
+
+        /* Tombol tutup (X) */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Responsive untuk tampilan yang lebih kecil */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modal Section -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="imgModal">
+        <div id="caption"></div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="gallery-container">
+        <h1>House Gallery</h1>
+        <div class="gallery">
+            <!-- Item 1 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="wood.jpg" alt="Product Image">
+                    <div class="gallery-caption">Wood House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="minimalis.jpg" alt="Product Image">
+                    <div class="gallery-caption">Minimalist House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="japan.jpg" alt="Product Image">
+                    <div class="gallery-caption">Japandi House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="classic.jpg" alt="Product Image">
+                    <div class="gallery-caption">Classic House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="apartemen.jpg" alt="Product Image">
+                    <div class="gallery-caption">Apartment Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="eco.jpg" alt="Product Image">
+                    <div class="gallery-caption">Eco House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 7 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="kaca.jpg" alt="Product Image">
+                    <div class="gallery-caption">Glass House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 8 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="mansion.jpg" alt="Product Image">
+                    <div class="gallery-caption">Mansion Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 9 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="modern.jpg" alt="Product Image">
+                    <div class="gallery-caption">Modern House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 10 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="skandinavian.jpg" alt="Product Image">
+                    <div class="gallery-caption">Scandinavian House Exterior</div>
+                </div>
+            </div>
+
+            <!-- Item 11 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="wood2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Wood House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 12 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="minimalis2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Minimalist House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 13 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="japan2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Japandi House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 14 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="classic2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Classic House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 15 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="apartemen2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Apartment Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 16 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="eco2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Eco House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 17 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="kaca2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Glass House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 18 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="mansion2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Mansion Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 19 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="modern2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Modern House Interior</div>
+                </div>
+            </div>
+
+            <!-- Item 20 -->
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="scandinavian2.jpg" alt="Product Image">
+                    <div class="gallery-caption">Scandinavian House Interior</div>
+                </div>
+            </div>
+            <!-- Tambahkan item lain di sini -->
+        </div>
+    </div>
+
+    <script>
+        // Ambil elemen modal
+        var modal = document.getElementById("myModal");
+
+        // Ambil gambar dan modal gambar
+        var images = document.querySelectorAll(".gallery-item img");
+        var modalImg = document.getElementById("imgModal");
+        var captionText = document.getElementById("caption");
+
+        // Loop melalui semua gambar dalam galeri dan tambahkan event listener
+        images.forEach(function (image) {
+            image.onclick = function () {
+                modal.style.display = "block";
+                modalImg.src = this.src;  // Gunakan src gambar yang diklik
+                captionText.innerHTML = this.nextElementSibling.innerHTML;  // Caption dari gambar
+            };
+        });
+
+        // Ambil elemen "close" untuk menutup modal
+        var closeBtn = document.getElementsByClassName("close")[0];
+
+        // Ketika tombol "X" diklik, tutup modal
+        closeBtn.onclick = function () {
+            modal.style.display = "none";
+        };
+    </script>
+
+</body>
+
+</html>
